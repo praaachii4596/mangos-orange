@@ -30,10 +30,13 @@ const AdminDashboard = () => {
 
   const loadStats = async () => {
     try {
+      console.log('Loading dashboard stats...');
       const dashboardStats = await careerAPI.getDashboardStats();
+      console.log('Dashboard stats loaded:', dashboardStats);
       setStats(dashboardStats);
     } catch (error) {
       console.error('Error loading dashboard stats:', error);
+      toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }

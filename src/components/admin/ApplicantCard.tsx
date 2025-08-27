@@ -62,6 +62,11 @@ const ApplicantCard = ({ applicant, onUpdate }: ApplicantCardProps) => {
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-lg">{applicant.name}</CardTitle>
+            {applicant.jobTitle && (
+              <div className="text-sm text-primary font-medium mb-2">
+                Applied for: {applicant.jobTitle}
+              </div>
+            )}
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Mail className="w-4 h-4" />

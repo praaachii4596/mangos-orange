@@ -174,7 +174,7 @@ export const careerAPI = {
         .from('applicants')
         .select(`
           *,
-          job_posting:job_postings(title)
+          job_postings!inner(title, department)
         `)
         .order('applied_at', { ascending: false });
 
@@ -184,6 +184,8 @@ export const careerAPI = {
 
       const { data, error } = await query;
       if (error) throw error;
+
+      console.log('Fetched applicants:', data);
 
       return data.map(applicant => ({
         id: applicant.id,
@@ -197,6 +199,7 @@ export const careerAPI = {
         notes: applicant.notes,
         appliedAt: applicant.applied_at,
         updatedAt: applicant.updated_at,
+        jobTitle: applicant.job_postings?.title,
       }));
     } catch (error) {
       console.error('Error fetching applicants:', error);
@@ -255,6 +258,7 @@ export const careerAPI = {
   // Dashboard Stats
   async getDashboardStats(): Promise<DashboardStats> {
     try {
+      console.log('Fetching dashboard stats...');
       const [jobsResult, applicantsResult, recentApplicantsResult] = await Promise.all([
         supabase.from('job_postings').select('status'),
         supabase.from('applicants').select('status'),
@@ -262,11 +266,15 @@ export const careerAPI = {
           .from('applicants')
           .select(`
             *,
-            job_posting:job_postings(title)
+            job_postings!inner(title)
           `)
           .order('applied_at', { ascending: false })
           .limit(5)
       ]);
+
+      console.log('Jobs result:', jobsResult);
+      console.log('Applicants result:', applicantsResult);
+      console.log('Recent applicants result:', recentApplicantsResult);
 
       const jobs = jobsResult.data || [];
       const applicants = applicantsResult.data || [];

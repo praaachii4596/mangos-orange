@@ -29,6 +29,7 @@ export interface Applicant {
   notes?: string;
   appliedAt: string;
   updatedAt: string;
+  jobTitle?: string;
 }
 
 export interface Admin {

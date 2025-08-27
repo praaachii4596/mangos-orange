@@ -7,7 +7,7 @@ import ApplicantCard from '@/components/admin/ApplicantCard';
 import { careerAPI } from '@/lib/career-api';
 import { Applicant, JobPosting } from '@/types/career';
 import { toast } from 'sonner';
-import { Search, Users } from 'lucide-react';
+import { Search, Users, Briefcase } from 'lucide-react';
 
 const AdminApplicants = () => {
   const [applicants, setApplicants] = useState<Applicant[]>([]);
@@ -23,10 +23,13 @@ const AdminApplicants = () => {
 
   const loadData = async () => {
     try {
+      console.log('Loading applicants and jobs...');
       const [applicantsData, jobsData] = await Promise.all([
         careerAPI.getApplicants(),
         careerAPI.getJobPostings(true)
       ]);
+      console.log('Loaded applicants:', applicantsData);
+      console.log('Loaded jobs:', jobsData);
       setApplicants(applicantsData);
       setJobs(jobsData);
     } catch (error) {
@@ -114,14 +117,14 @@ const AdminApplicants = () => {
         {filteredApplicants.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
-              <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-medium text-foreground mb-2">
-                No applicants found
+                {applicants.length === 0 ? 'No applications yet' : 'No applicants match your filters'}
               </h3>
               <p className="text-muted-foreground">
-                {searchTerm || statusFilter !== 'all' || jobFilter !== 'all'
-                  ? 'Try adjusting your search or filters'
-                  : 'Applications will appear here when candidates apply for your job postings'
+                {applicants.length === 0 
+                  ? 'Applications will appear here when candidates apply for your job postings'
+                  : 'Try adjusting your search or filters to find more applicants'
                 }
               </p>
             </CardContent>
